@@ -1,9 +1,9 @@
-import type { TextRegion } from "../../../drizzle/schema";
+import type { TextRegion } from "../../drizzle/schema";
 
 /**
- * ══════════════════════════════════════════════════════════════════════════════
+ * ═══════════════════════════════════════════════════════════════════════════════════
  * LAYER SYSTEM - Modern Architecture
- * ══════════════════════════════════════════════════════════════════════════════
+ * ═══════════════════════════════════════════════════════════════════════════════════
  * 
  * This module provides a layer-based system that wraps the existing region system.
  * Each layer represents a text element with full control over positioning, sizing,
@@ -17,7 +17,9 @@ import type { TextRegion } from "../../../drizzle/schema";
  * - Full styling support
  */
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════════
+// Types
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 /**
  * TextStyling - Complete text appearance control
@@ -89,7 +91,9 @@ export interface LayerState {
   containerHeight: number; // Canvas/image height
 }
 
-// ─── Layer Factory ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════════
+// Layer Factory
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 /**
  * Creates a new layer from a TextRegion
@@ -158,7 +162,9 @@ export function layerToRegion(layer: Layer): Partial<TextRegion> {
   };
 }
 
-// ─── Layer State Management ─────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════════
+// Layer State Management
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 /**
  * Updates pixel coordinates when container size changes
@@ -264,7 +270,9 @@ export function markLayerAsSynced(layer: Layer): Layer {
   };
 }
 
-// ─── Layer List Operations ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════════
+// Layer List Operations
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 /**
  * Updates a layer in the layers array
@@ -318,7 +326,9 @@ export function reorderLayers(
   }));
 }
 
-// ─── Utility Functions ──────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════════
+// Utility Functions
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 /**
  * Gets the display text for a layer (edited or original)
