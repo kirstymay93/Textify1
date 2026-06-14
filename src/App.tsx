@@ -11,5 +11,9 @@ export default function App() {
     }
   }, [location, setLocation]);
 
+  if (location === '/') {
+    return null;
+  }
+
   return <Editor />;
 }
