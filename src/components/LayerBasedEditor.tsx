@@ -1,4 +1,4 @@
-import { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Component, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useParams } from "wouter";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -32,7 +32,6 @@ import {
   type Layer,
   type TextStyling,
 } from "@/lib/layerSystem";
-import type { TextRegion } from "../../../drizzle/schema";
 
 const STYLE_FIELDS = [
   "fontFamily",
