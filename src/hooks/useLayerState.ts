@@ -11,12 +11,12 @@ import {
   removeLayerFromList,
   reorderLayers,
 } from "@/lib/layerSystem";
-import type { TextRegion } from "../../../drizzle/schema";
+import type { TextRegion } from "../../drizzle/schema";
 
 /**
- * ══════════════════════════════════════════════════════════════════════════════
+ * ═══════════════════════════════════════════════════════════════════════════════════
  * useLayerState Hook
- * ══════════════════════════════════════════════════════════════════════════════
+ * ═══════════════════════════════════════════════════════════════════════════════════
  * 
  * Custom hook for managing the layer system state.
  * Provides a clean API for layer operations while maintaining
@@ -75,7 +75,9 @@ export function useLayerState({
   containerWidth,
   containerHeight,
 }: UseLayerStateOptions): UseLayerStateReturn {
-  // ─── State ──────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // State
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const [layers, setLayers] = useState<Layer[]>(() => {
     return initialRegions.map((region) =>
       createLayerFromRegion(region, containerWidth, containerHeight)
@@ -86,7 +88,9 @@ export function useLayerState({
   const [currentContainerWidth, setCurrentContainerWidth] = useState(containerWidth);
   const [currentContainerHeight, setCurrentContainerHeight] = useState(containerHeight);
 
-  // ─── Queries ────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Queries
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const selectedLayer = layers.find((l) => l.id === selectedLayerId) ?? null;
 
   const getLayer = useCallback(
@@ -94,7 +98,9 @@ export function useLayerState({
     [layers]
   );
 
-  // ─── Selection ──────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Selection
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const selectLayer = useCallback((id: number) => {
     setSelectedLayerId(id);
   }, []);
@@ -107,7 +113,9 @@ export function useLayerState({
     setSelectedLayerId((prev) => (prev === id ? null : id));
   }, []);
 
-  // ─── Updates ────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Updates
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const updateLayerStyle = useCallback(
     (id: number, updates: Partial<TextStyling>) => {
       setLayers((prev) => {
@@ -161,7 +169,9 @@ export function useLayerState({
     setLayers((prev) => updateLayerInList(prev, id, { locked }));
   }, []);
 
-  // ─── Layer Management ───────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Layer Management
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const removeLayer = useCallback((id: number) => {
     setLayers((prev) => removeLayerFromList(prev, id));
     if (selectedLayerId === id) {
@@ -189,7 +199,9 @@ export function useLayerState({
     });
   }, []);
 
-  // ─── Sync ───────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Sync
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const markLayerSynced = useCallback((id: number) => {
     setLayers((prev) => {
       const layer = prev.find((l) => l.id === id);
@@ -198,7 +210,9 @@ export function useLayerState({
     });
   }, []);
 
-  // ─── Container Size ─────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Container Size
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const updateContainerSize = useCallback((width: number, height: number) => {
     setCurrentContainerWidth(width);
     setCurrentContainerHeight(height);
@@ -206,7 +220,9 @@ export function useLayerState({
     setLayers((prev) => recalculateAllPixelCoords(prev, width, height));
   }, []);
 
-  // ─── Batch Operations ───────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Batch Operations
+  // ═══════════════════════════════════════════════════════════════════════════════════
   const initializeFromRegions = useCallback(
     (regions: (TextRegion & { px?: number; py?: number; pw?: number; ph?: number })[]) => {
       const newLayers = regions.map((region) =>
@@ -218,7 +234,9 @@ export function useLayerState({
     [currentContainerWidth, currentContainerHeight]
   );
 
-  // ─── Effects ────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Effects
+  // ═══════════════════════════════════════════════════════════════════════════════════
   // Sync container size updates from props
   useEffect(() => {
     if (containerWidth !== currentContainerWidth || containerHeight !== currentContainerHeight) {
@@ -226,7 +244,9 @@ export function useLayerState({
     }
   }, [containerWidth, containerHeight, currentContainerWidth, currentContainerHeight, updateContainerSize]);
 
-  // ─── Return API ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════════
+  // Return API
+  // ═══════════════════════════════════════════════════════════════════════════════════
   return {
     layers,
     selectedLayerId,
