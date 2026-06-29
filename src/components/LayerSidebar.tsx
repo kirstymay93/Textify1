@@ -1,4 +1,5 @@
 import { Eye, EyeOff, Lock, Unlock, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import type { KeyboardEvent } from "react";
 import type { Layer } from "@/lib/layerSystem";
 import { getLayerDisplayText } from "@/lib/layerSystem";
 
@@ -24,6 +25,12 @@ export function LayerSidebar({
   onDeleteLayer,
 }: LayerSidebarProps) {
   const orderedLayers = [...layers].sort((a, b) => b.zIndex - a.zIndex);
+  const handleKeyAction = (event: KeyboardEvent<HTMLElement>, action: () => void) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      action();
+    }
+  };
 
   return (
     <section className="flex h-full flex-col border-r border-border/60 bg-card/40">
@@ -38,7 +45,7 @@ export function LayerSidebar({
           const preview = getLayerDisplayText(layer).trim() || "(empty text)";
 
           return (
-            <button
+            <div
               key={layer.id}
               onClick={() => onSelectLayer(layer.id)}
               className={[
@@ -49,73 +56,76 @@ export function LayerSidebar({
               ].join(" ")}
               data-layer-id={layer.id}
               draggable={false}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => handleKeyAction(e, () => onSelectLayer(layer.id))}
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-xs font-medium text-foreground">Layer {layer.id}</span>
                 <div className="flex items-center gap-1">
-                  <span
+                  <button
+                    type="button"
                     className="rounded p-1 hover:bg-muted"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleVisibility(layer.id, !layer.visible);
                     }}
-                    role="button"
-                    tabIndex={0}
+                    onKeyDown={(e) => handleKeyAction(e, () => onToggleVisibility(layer.id, !layer.visible))}
                   >
                     {layer.visible ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
-                  </span>
-                  <span
+                  </button>
+                  <button
+                    type="button"
                     className="rounded p-1 hover:bg-muted"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleLock(layer.id, !layer.locked);
                     }}
-                    role="button"
-                    tabIndex={0}
+                    onKeyDown={(e) => handleKeyAction(e, () => onToggleLock(layer.id, !layer.locked))}
                   >
                     {layer.locked ? <Lock className="h-3.5 w-3.5" /> : <Unlock className="h-3.5 w-3.5" />}
-                  </span>
+                  </button>
                 </div>
               </div>
 
               <p className="mt-1 truncate text-[11px] text-muted-foreground">{preview}</p>
 
               <div className="mt-2 flex items-center justify-end gap-1">
-                <span
+                <button
+                  type="button"
                   className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                   onClick={(e) => {
                     e.stopPropagation();
                     onMoveLayerUp(layer.id);
                   }}
-                  role="button"
-                  tabIndex={0}
+                  onKeyDown={(e) => handleKeyAction(e, () => onMoveLayerUp(layer.id))}
                 >
                   <ChevronUp className="h-3.5 w-3.5" />
-                </span>
-                <span
+                </button>
+                <button
+                  type="button"
                   className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                   onClick={(e) => {
                     e.stopPropagation();
                     onMoveLayerDown(layer.id);
                   }}
-                  role="button"
-                  tabIndex={0}
+                  onKeyDown={(e) => handleKeyAction(e, () => onMoveLayerDown(layer.id))}
                 >
                   <ChevronDown className="h-3.5 w-3.5" />
-                </span>
-                <span
+                </button>
+                <button
+                  type="button"
                   className="rounded p-1 text-destructive/80 hover:bg-muted hover:text-destructive"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteLayer(layer.id);
                   }}
-                  role="button"
-                  tabIndex={0}
+                  onKeyDown={(e) => handleKeyAction(e, () => onDeleteLayer(layer.id))}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                </span>
+                </button>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

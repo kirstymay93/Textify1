@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "wouter";
 import { toast } from "sonner";
-import type { TextRegion } from "../../../drizzle/schema";
 import { trpc } from "@/lib/trpc";
 import { loadGoogleFont } from "@/components/FontLoader";
 import { useLayerState } from "@/hooks/useLayerState";
@@ -13,6 +12,17 @@ import { LayerPropertiesPanel } from "@/components/LayerPropertiesPanel";
 function normalizeText(text: string): string {
   return text.normalize("NFC");
 }
+
+type UpdatableRegionField =
+  | "editedText"
+  | "fontFamily"
+  | "fontSize"
+  | "fontWeight"
+  | "fontStyle"
+  | "color"
+  | "backgroundColor"
+  | "letterSpacing"
+  | "textAlign";
 
 export default function Editor() {
   const params = useParams<{ projectId?: string }>();
@@ -59,7 +69,7 @@ export default function Editor() {
 
   useEffect(() => {
     if (!imgSize.w || !imgSize.h) return;
-    initializeFromRegions(rawRegions as (TextRegion & { px?: number; py?: number; pw?: number; ph?: number })[]);
+    initializeFromRegions(rawRegions);
   }, [imgSize.w, imgSize.h, rawRegions, initializeFromRegions]);
 
   useEffect(() => {
@@ -85,9 +95,12 @@ export default function Editor() {
   });
 
   const updateRegionField = useCallback(
-    async (id: number, field: string, value: string | number | null) => {
+    async (id: number, field: UpdatableRegionField, value: string | number | null) => {
       try {
-        await updateRegion.mutateAsync({ id, [field]: value } as Record<string, unknown>);
+        await updateRegion.mutateAsync({ id, [field]: value } as {
+          id: number;
+          [key: string]: string | number | null;
+        });
       } catch {
         toast.error("Failed to save changes");
         refetchRegions();
@@ -109,7 +122,11 @@ export default function Editor() {
     (id: number, updates: Partial<TextStyling>) => {
       updateLayerStyle(id, updates);
       Object.entries(updates).forEach(([field, value]) => {
-        void updateRegionField(id, field, value as string | number | null);
+        if (value === undefined) {
+          void updateRegionField(id, field as UpdatableRegionField, null);
+          return;
+        }
+        void updateRegionField(id, field as UpdatableRegionField, value as string | number | null);
       });
     },
     [updateLayerStyle, updateRegionField]
