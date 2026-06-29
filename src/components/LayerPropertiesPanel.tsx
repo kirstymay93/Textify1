@@ -82,7 +82,11 @@ export function LayerPropertiesPanel({
               min={6}
               max={240}
               value={layer.styling.fontSize}
-              onChange={(e) => onUpdateStyle(layer.id, { fontSize: Number(e.target.value) || 0 })}
+              onChange={(e) => {
+                const next = Number(e.target.value);
+                if (!Number.isFinite(next) || next <= 0) return;
+                onUpdateStyle(layer.id, { fontSize: next });
+              }}
               className="w-full rounded border border-border/60 bg-background px-2 py-1.5 text-sm"
             />
           </label>

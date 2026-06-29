@@ -24,6 +24,19 @@ type UpdatableRegionField =
   | "letterSpacing"
   | "textAlign";
 
+type RegionMutationPayload = {
+  id: number;
+  editedText?: string;
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  fontStyle?: string;
+  color?: string;
+  backgroundColor?: string | null;
+  letterSpacing?: number;
+  textAlign?: string;
+};
+
 export default function Editor() {
   const params = useParams<{ projectId?: string }>();
   const projectId = params.projectId ? Number(params.projectId) : 0;
@@ -97,10 +110,39 @@ export default function Editor() {
   const updateRegionField = useCallback(
     async (id: number, field: UpdatableRegionField, value: string | number | null) => {
       try {
-        await updateRegion.mutateAsync({ id, [field]: value } as {
-          id: number;
-          [key: string]: string | number | null;
-        });
+        let payload: RegionMutationPayload;
+        switch (field) {
+          case "editedText":
+            payload = { id, editedText: typeof value === "string" ? value : "" };
+            break;
+          case "fontFamily":
+            payload = { id, fontFamily: typeof value === "string" ? value : "" };
+            break;
+          case "fontSize":
+            payload = { id, fontSize: typeof value === "number" ? value : 16 };
+            break;
+          case "fontWeight":
+            payload = { id, fontWeight: typeof value === "string" ? value : "400" };
+            break;
+          case "fontStyle":
+            payload = { id, fontStyle: typeof value === "string" ? value : "normal" };
+            break;
+          case "color":
+            payload = { id, color: typeof value === "string" ? value : "#000000" };
+            break;
+          case "backgroundColor":
+            payload = { id, backgroundColor: value === null ? null : typeof value === "string" ? value : null };
+            break;
+          case "letterSpacing":
+            payload = { id, letterSpacing: typeof value === "number" ? value : 0 };
+            break;
+          case "textAlign":
+            payload = { id, textAlign: typeof value === "string" ? value : "left" };
+            break;
+          default:
+            payload = { id };
+        }
+        await updateRegion.mutateAsync(payload);
       } catch {
         toast.error("Failed to save changes");
         refetchRegions();
@@ -193,30 +235,39 @@ export default function Editor() {
         const exportRegions = layers.map(layerToRegion);
 
         for (const region of exportRegions) {
-          const text = normalizeText((region.editedText as string) ?? (region.originalText as string) ?? "");
+          const editedText = typeof region.editedText === "string" ? region.editedText : "";
+          const originalText = typeof region.originalText === "string" ? region.originalText : "";
+          const text = normalizeText(editedText || originalText);
           if (!text) continue;
 
-          const x = ((region.x as number) / 100) * canvas.width;
-          const y = ((region.y as number) / 100) * canvas.height;
-          const w = ((region.width as number) / 100) * canvas.width;
-          const h = ((region.height as number) / 100) * canvas.height;
-          const fontSize = ((region.fontSize as number) ?? 16) * Math.min(scaleX, scaleY);
+          const xPct = typeof region.x === "number" ? region.x : 0;
+          const yPct = typeof region.y === "number" ? region.y : 0;
+          const wPct = typeof region.width === "number" ? region.width : 0;
+          const hPct = typeof region.height === "number" ? region.height : 0;
+          const fontSizeValue = typeof region.fontSize === "number" ? region.fontSize : 16;
+
+          const x = (xPct / 100) * canvas.width;
+          const y = (yPct / 100) * canvas.height;
+          const w = (wPct / 100) * canvas.width;
+          const h = (hPct / 100) * canvas.height;
+          const fontSize = fontSizeValue * Math.min(scaleX, scaleY);
 
           if (region.backgroundColor && region.backgroundColor !== "transparent") {
-            ctx.fillStyle = region.backgroundColor as string;
+            ctx.fillStyle = region.backgroundColor;
             ctx.fillRect(x, y, w, h);
           }
 
-          const weight = (region.fontWeight as string) ?? "400";
-          const style = (region.fontStyle as string) ?? "normal";
-          const family = (region.fontFamily as string) ?? "sans-serif";
+          const weight = typeof region.fontWeight === "string" ? region.fontWeight : "400";
+          const style = typeof region.fontStyle === "string" ? region.fontStyle : "normal";
+          const family = typeof region.fontFamily === "string" ? region.fontFamily : "sans-serif";
           ctx.font = `${style} ${weight} ${fontSize}px "${family}", sans-serif`;
-          ctx.fillStyle = (region.color as string) ?? "#000000";
-          ctx.textAlign = ((region.textAlign as CanvasTextAlign) ?? "left");
+          ctx.fillStyle = typeof region.color === "string" ? region.color : "#000000";
+          const textAlign = region.textAlign === "center" || region.textAlign === "right" ? region.textAlign : "left";
+          ctx.textAlign = textAlign;
           ctx.textBaseline = "top";
 
           const alignX =
-            region.textAlign === "center" ? x + w / 2 : region.textAlign === "right" ? x + w : x;
+            textAlign === "center" ? x + w / 2 : textAlign === "right" ? x + w : x;
 
           ctx.fillText(text, alignX, y + h * 0.1, w);
         }
