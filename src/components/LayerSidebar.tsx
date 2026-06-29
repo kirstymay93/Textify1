@@ -27,7 +27,7 @@ export function LayerSidebar({
   const orderedLayers = [...layers].sort((a, b) => b.zIndex - a.zIndex);
   const handleKeyAction = (event: KeyboardEvent<HTMLElement>, action: () => void) => {
     if (event.key === "Enter" || event.key === " ") {
-      if (event.currentTarget === document.activeElement) {
+      if (event.key === " ") {
         event.preventDefault();
       }
       action();

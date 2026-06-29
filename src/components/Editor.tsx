@@ -37,6 +37,20 @@ type RegionMutationPayload = {
   textAlign?: string;
 };
 
+function isUpdatableRegionField(field: string): field is UpdatableRegionField {
+  return [
+    "editedText",
+    "fontFamily",
+    "fontSize",
+    "fontWeight",
+    "fontStyle",
+    "color",
+    "backgroundColor",
+    "letterSpacing",
+    "textAlign",
+  ].includes(field);
+}
+
 export default function Editor() {
   const params = useParams<{ projectId?: string }>();
   const projectId = params.projectId ? Number(params.projectId) : 0;
@@ -143,7 +157,8 @@ export default function Editor() {
             payload = { id };
         }
         await updateRegion.mutateAsync(payload);
-      } catch {
+      } catch (error) {
+        console.error("Failed to persist layer update", error);
         toast.error("Failed to save changes");
         refetchRegions();
       }
@@ -164,11 +179,12 @@ export default function Editor() {
     (id: number, updates: Partial<TextStyling>) => {
       updateLayerStyle(id, updates);
       Object.entries(updates).forEach(([field, value]) => {
+        if (!isUpdatableRegionField(field)) return;
         if (value === undefined) {
-          void updateRegionField(id, field as UpdatableRegionField, null);
+          void updateRegionField(id, field, null);
           return;
         }
-        void updateRegionField(id, field as UpdatableRegionField, value as string | number | null);
+        void updateRegionField(id, field, value as string | number | null);
       });
     },
     [updateLayerStyle, updateRegionField]
@@ -280,7 +296,8 @@ export default function Editor() {
         anchor.click();
 
         toast.success(`Image exported as ${format.toUpperCase()}`);
-      } catch {
+      } catch (error) {
+        console.error("Export failed", error);
         toast.error("Export failed");
       } finally {
         setIsExporting(false);

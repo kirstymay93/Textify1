@@ -60,7 +60,7 @@ export function useLayerRenderer({
     setMetrics({
       renderDurationMs,
       layerCount: renderableLayers.length,
-      estimatedFps: renderDurationMs > 0 ? Math.min(60, Math.round(1000 / renderDurationMs)) : 60,
+      estimatedFps: renderDurationMs > 0 ? Math.round(1000 / renderDurationMs) : 60,
     });
   }, [containerRef, enabled, renderableLayers, onSelectLayer]);
 
