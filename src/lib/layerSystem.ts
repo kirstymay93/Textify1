@@ -48,6 +48,8 @@ export interface Layer {
   position: Position;
   styling: TextStyling;
   zIndex: number;
+  visible: boolean;
+  locked: boolean;
 }
 
 export function getLayerDisplayText(layer: Layer): string {

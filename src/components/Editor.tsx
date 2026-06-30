@@ -2,10 +2,10 @@
 import { EditorErrorBoundary } from "@/components/EditorErrorBoundary";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useEditorInitializer, useEditorStore } from "./hooks/useEditorStore";
-import { EditorHeader } from "./components/EditorHeader";
-import { CanvasArea } from "./components/CanvasArea";
-import { EditorSidebar } from "./components/EditorSidebar";
+import { useEditorInitializer, useEditorStore } from "@/hooks/useEditorStore";
+import { EditorHeader } from "./EditorHeader";
+import { CanvasArea } from "./CanvasArea";
+import { EditorSidebar } from "./EditorSidebar";
 
 export function EditorContent() {
   const { projectLoading, project, authLoading, containerRef } = useEditorInitializer();

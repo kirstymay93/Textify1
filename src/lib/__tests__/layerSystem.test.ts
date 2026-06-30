@@ -32,6 +32,8 @@ const mockLayer: Layer = {
     textAlign: 'left',
   },
   zIndex: 1,
+  visible: true,
+  locked: false,
 };
 
 describe('layerSystem', () => {

@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
-import { useLocation } from 'wouter';
+import { useCallback, useRef } from 'react';
+import { useLocation, useParams } from 'wouter';
+import { useAuth } from '@/_core/hooks/useAuth';
 
 export function useEditorStore() {
   const [, navigate] = useLocation();
@@ -17,4 +18,19 @@ export function useEditorStore() {
     goToProject,
     goHome,
   };
+}
+
+export function useEditorInitializer() {
+  const params = useParams<{ projectId?: string }>();
+  const projectId = params.projectId ? Number.parseInt(params.projectId, 10) : undefined;
+  const { loading: authLoading } = useAuth();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Placeholder project – replace with a real tRPC query once the backend is wired up
+  const project = projectId
+    ? { id: projectId, title: `Project ${projectId}`, originalImageUrl: '' }
+    : null;
+  const projectLoading = false;
+
+  return { project, projectLoading, authLoading, containerRef };
 }
