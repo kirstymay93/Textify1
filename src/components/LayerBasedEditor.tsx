@@ -22,7 +22,7 @@ import {
   AlignRight,
 } from "lucide-react";
 import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import { useTRPC } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLayerState } from "@/hooks/useLayerState";
@@ -504,6 +504,8 @@ function LayerEditorApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  const trpc = useTRPC();
 
   const { data: project, isLoading: projectLoading, refetch: refetchProject } =
     trpc.editor.getProject.useQuery(

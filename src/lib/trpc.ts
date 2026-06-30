@@ -1,5 +1,7 @@
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
-import type { AppRouter } from './router';
+
+// Mock router type for now
+export type AppRouter = any;
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') return '';
@@ -25,22 +27,19 @@ export const trpc = createTRPCClient<AppRouter>({
   ],
 });
 
-// Mock router type for now
-export type AppRouter = any;
-
 // Helper for using TRPC hooks
 export function useTRPC() {
   return {
     editor: {
       getProject: {
-        useQuery: () => ({
+        useQuery: (..._args: unknown[]) => ({
           data: null,
           isLoading: true,
           refetch: async () => {},
         }),
       },
       getTextRegions: {
-        useQuery: () => ({
+        useQuery: (..._args: unknown[]) => ({
           data: [],
           isLoading: true,
           refetch: async () => {},
@@ -48,12 +47,12 @@ export function useTRPC() {
       },
       analyzeImage: {
         useMutation: () => ({
-          mutateAsync: async () => ({ regions: [] }),
+          mutateAsync: async (..._args: unknown[]) => ({ regions: [] }),
         }),
       },
       updateTextRegion: {
         useMutation: () => ({
-          mutateAsync: async () => ({}),
+          mutateAsync: async (..._args: unknown[]) => ({}),
         }),
       },
     },
