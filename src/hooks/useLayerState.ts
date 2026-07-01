@@ -79,6 +79,8 @@ export function useLayerState(options: UseLayerStateOptions) {
         textAlign: (region.textAlign ?? 'left') as 'left' | 'center' | 'right',
       },
       zIndex: index,
+      visible: true,
+      locked: false,
     }));
     setLayers(newLayers);
   }, [options.containerWidth, options.containerHeight]);
