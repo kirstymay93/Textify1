@@ -27,6 +27,8 @@ export interface RenderableLayer extends Layer {
   isSelected: boolean;
   isDragging?: boolean;
   isHovered?: boolean;
+  visible?: boolean;
+  locked?: boolean;
 }
 
 /**
