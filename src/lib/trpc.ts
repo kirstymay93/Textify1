@@ -1,3 +1,16 @@
+/**
+ * TEMPORARY FRONTEND MOCK — NOT FOR PRODUCTION USE
+ *
+ * This module provides a lightweight mock of the tRPC client to support
+ * frontend development and preview environments before the backend is
+ * available. It returns static/empty data and does not make any real
+ * network requests.
+ *
+ * Migration: Once the backend is available, replace this file with a real
+ * tRPC client created via `createTRPCClient` (or the React Query integration
+ * via `createTRPCReact`) pointing at the production API endpoint.
+ */
+
 // Mock router type
 export type AppRouter = any;
 
