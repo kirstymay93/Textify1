@@ -40,7 +40,7 @@ describe('layerSystem', () => {
       expect(getLayerDisplayText(mockLayer)).toBe('Edited');
     });
 
-    it('falls back to original text when edited text is empty', () => {
+    it('preserves intentionally empty edited text', () => {
       const layer = { ...mockLayer, editedText: '' };
       expect(getLayerDisplayText(layer)).toBe('');
     });
