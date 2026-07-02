@@ -144,7 +144,7 @@ npm run test:coverage
 
 This repository uses GitHub Actions for automated testing and building:
 
-- **test.yml**: Runs tests on Node 18.x and 20.x, on push and pull requests
+- **test.yml**: Runs lint, tests, and builds on Node 20.x for pushes and pull requests
 - **build.yml**: Validates TypeScript and builds the project
 
 All workflows run on push to `main` and `develop` branches and on pull requests.
