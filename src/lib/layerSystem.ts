@@ -51,7 +51,7 @@ export interface Layer {
 }
 
 export function getLayerDisplayText(layer: Layer): string {
-  return layer.editedText || layer.originalText;
+  return layer.editedText ?? layer.originalText;
 }
 
 export function isLayerModified(layer: Layer): boolean {
