@@ -2,12 +2,15 @@ import { useState } from "react";
 import { useEditorInitializer } from "@/hooks/useEditorStore";
 import { EditorHeader } from "@/components/EditorHeader";
 import { EditorSidebar } from "@/components/EditorSidebar";
-import { TextArea, type Block } from "@/components/TextArea";
+import { TextArea } from "@/components/TextArea";
+import type { Block } from "@/types/block";
 
 export default function Editor() {
   const { project, authLoading, projectLoading } = useEditorInitializer();
 
-  const [blocks, setBlocks] = useState<Block[]>(project.blocks);
+  const [blocks, setBlocks] = useState<Block[]>(
+    project?.blocks ?? []
+  );
 
   if (authLoading || projectLoading) {
     return (
@@ -24,11 +27,7 @@ export default function Editor() {
       <EditorHeader project={project} />
 
       <div className="flex flex-1 overflow-hidden">
-        <TextArea
-          blocks={blocks}
-          setBlocks={setBlocks}
-        />
-
+        <TextArea blocks={blocks} setBlocks={setBlocks} />
         <EditorSidebar />
       </div>
     </div>
