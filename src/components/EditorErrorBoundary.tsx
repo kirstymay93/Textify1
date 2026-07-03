@@ -1,47 +1,44 @@
-import { Component, ReactNode } from 'react';
-import { AlertCircle } from 'lucide-react';
+import React from "react";
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 interface State {
   hasError: boolean;
-  error?: Error;
 }
 
-export class EditorErrorBoundary extends Component<Props, State> {
+export class EditorErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return {
-      hasError: true,
-      error,
-    };
+  static getDerivedStateFromError(): State {
+    return { hasError: true };
   }
 
-  componentDidCatch(error: Error) {
-    console.error('Editor Error:', error);
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("Editor crashed:", error, info);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6">
-          <div className="text-center max-w-md">
-            <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-foreground mb-2">Something went wrong</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {this.state.error?.message || 'An unexpected error occurred in the editor.'}
+        <div className="h-full w-full flex items-center justify-center p-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-lg font-semibold text-red-500">
+              Something went wrong
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              The editor encountered an error.
             </p>
+
             <button
-              onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 text-sm"
+              className="mt-3 px-4 py-2 rounded-md bg-black text-white"
+              onClick={() => this.setState({ hasError: false })}
             >
-              Reload Page
+              Reload editor
             </button>
           </div>
         </div>
@@ -51,3 +48,5 @@ export class EditorErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export default EditorErrorBoundary;
