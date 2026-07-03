@@ -1,21 +1,19 @@
-interface CanvasAreaProps {
-  originalImageUrl: string;
-  title: string;
-  containerRef: React.RefObject<HTMLDivElement>;
+interface TextAreaProps {
+  blocks: { id: string; content: string }[];
+  onChange: (id: string, value: string) => void;
 }
 
-export function CanvasArea({ originalImageUrl, title, containerRef }: CanvasAreaProps) {
+export function TextArea({ blocks, onChange }: TextAreaProps) {
   return (
-    <div className="flex-1 overflow-auto bg-[oklch(0.08_0.005_260)] flex items-start justify-center p-8">
-      <div ref={containerRef} className="relative inline-block">
-        <img
-          src={originalImageUrl}
-          alt={title}
-          className="block max-w-full max-h-[calc(100vh-140px)] object-contain select-none rounded-lg shadow-2xl"
-          draggable={false}
-          crossOrigin="anonymous"
+    <div className="flex-1 p-8 space-y-4">
+      {blocks.map((block) => (
+        <textarea
+          key={block.id}
+          value={block.content}
+          onChange={(e) => onChange(block.id, e.target.value)}
+          className="w-full min-h-[80px] p-3 rounded-md bg-background border border-border text-sm resize-none outline-none"
         />
-      </div>
+      ))}
     </div>
   );
 }
