@@ -1,36 +1,42 @@
-import { ReactNode } from 'react';
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'outline' | 'ghost' | 'destructive';
-  size?: 'sm' | 'md' | 'lg';
-  children: ReactNode;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "default" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
 }
 
-export function Button({
-  variant = 'default',
-  size = 'md',
-  className = '',
-  ...props
-}: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md transition-colors';
+const buttonBase =
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none";
 
-  const variantStyles = {
-    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    outline: 'border border-border/60 text-foreground hover:bg-muted/40',
-    ghost: 'text-foreground hover:bg-muted/40',
-    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-  };
+const variants = {
+  default: "bg-black text-white hover:bg-black/90",
+  outline: "border border-border bg-transparent hover:bg-muted",
+  ghost: "hover:bg-muted",
+};
 
-  const sizeStyles = {
-    sm: 'h-8 px-3 text-xs',
-    md: 'h-9 px-4 text-sm',
-    lg: 'h-10 px-6 text-base',
-  };
+const sizes = {
+  sm: "h-8 px-3",
+  md: "h-10 px-4",
+  lg: "h-12 px-6",
+};
 
-  return (
-    <button
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-      {...props}
-    />
-  );
-}
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = "default", size = "md", ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          buttonBase,
+          variants[variant],
+          sizes[size],
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+Button.displayName = "Button";
