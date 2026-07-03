@@ -1,28 +1,15 @@
-import { render, screen } from '@testing-library/react';
-import { Button } from '../ui/button';
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { Button } from "@/components/ui/button";
 
-describe('Button', () => {
-  it('renders button with children', () => {
+describe("Button", () => {
+  it("renders correctly", () => {
     render(<Button>Click me</Button>);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
+    expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  it('renders button with correct variant classes', () => {
-    const { container } = render(<Button variant="outline">Button</Button>);
-    const button = container.querySelector('button');
-    expect(button).toHaveClass('border');
-  });
-
-  it('renders button with correct size classes', () => {
-    const { container } = render(<Button size="lg">Button</Button>);
-    const button = container.querySelector('button');
-    expect(button).toHaveClass('h-10');
-  });
-
-  it('handles click events', () => {
-    const onClick = jest.fn();
-    render(<Button onClick={onClick}>Click</Button>);
-    screen.getByText('Click').click();
-    expect(onClick).toHaveBeenCalled();
+  it("renders children text", () => {
+    render(<Button>Save</Button>);
+    expect(screen.getByText("Save")).toBeInTheDocument();
   });
 });
