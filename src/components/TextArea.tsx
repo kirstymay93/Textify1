@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-interface Block {
+export interface Block {
   id: string;
   content: string;
 }
@@ -20,7 +20,7 @@ export function TextArea({ blocks, setBlocks }: TextAreaProps) {
   };
 
   const createBlockAfter = (index: number) => {
-    const newBlock = {
+    const newBlock: Block = {
       id: crypto.randomUUID(),
       content: "",
     };
@@ -42,13 +42,13 @@ export function TextArea({ blocks, setBlocks }: TextAreaProps) {
     setBlocks((prev) => {
       const copy = [...prev];
       const current = copy[index];
-      const prevBlock = copy[index - 1];
+      const previous = copy[index - 1];
 
-      prevBlock.content += current.content;
+      previous.content += current.content;
       copy.splice(index, 1);
 
       setTimeout(() => {
-        refs.current[prevBlock.id]?.focus();
+        refs.current[previous.id]?.focus();
       }, 0);
 
       return copy;
@@ -60,7 +60,9 @@ export function TextArea({ blocks, setBlocks }: TextAreaProps) {
       {blocks.map((block, index) => (
         <textarea
           key={block.id}
-          ref={(el) => (refs.current[block.id] = el)}
+          ref={(el) => {
+            refs.current[block.id] = el;
+          }}
           value={block.content}
           onChange={(e) => updateBlock(block.id, e.target.value)}
           onKeyDown={(e) => {
