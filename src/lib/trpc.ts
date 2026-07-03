@@ -1,45 +1,47 @@
+type AnyFn = (...args: any[]) => any;
+
 /**
  * TEMPORARY FRONTEND MOCK — NOT FOR PRODUCTION USE
  *
- * This module provides a lightweight mock of the tRPC client to support
- * frontend development and preview environments before the backend is
- * available. It returns static/empty data and does not make any real
- * network requests.
- *
- * Migration: Once the backend is available, replace this file with a real
- * tRPC client created via `createTRPCClient` (or the React Query integration
- * via `createTRPCReact`) pointing at the production API endpoint.
+ * Replace with real tRPC client when backend is ready.
  */
 
-// Mock router type
-export type AppRouter = any;
+export type AppRouter = unknown;
 
-// Mock TRPC client with hook-compatible API
+const createQuery = <TData>(data: TData) => ({
+  data,
+  isLoading: false,
+  refetch: async () => {},
+});
+
+const createMutation = <TArgs = any, TResult = any>(
+  result: TResult
+) => ({
+  mutateAsync: async (_args?: TArgs): Promise<TResult> => result,
+});
+
 export const trpc = {
   editor: {
     getProject: {
-      useQuery: (_args?: any, _opts?: any) => ({
-        data: null as any,
-        isLoading: false,
-        refetch: async () => {},
-      }),
+      useQuery: (_args?: any, _opts?: any) =>
+        createQuery(null as unknown),
     },
+
     getTextRegions: {
-      useQuery: (_args?: any, _opts?: any) => ({
-        data: [] as any[],
-        isLoading: false,
-        refetch: async () => {},
-      }),
+      useQuery: (_args?: any, _opts?: any) =>
+        createQuery([] as any[]),
     },
+
     analyzeImage: {
-      useMutation: () => ({
-        mutateAsync: async (_args?: any) => ({ regions: [] as any[] }),
-      }),
+      useMutation: () =>
+        createMutation<any, { regions: any[] }>({
+          regions: [],
+        }),
     },
+
     updateTextRegion: {
-      useMutation: () => ({
-        mutateAsync: async (_args?: any) => ({} as any),
-      }),
+      useMutation: () =>
+        createMutation<any, Record<string, never>>({}),
     },
   },
 };
