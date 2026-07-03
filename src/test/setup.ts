@@ -13,13 +13,21 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
-// Optional: only silence errors if explicitly needed
-// (safer for CI debugging)
+let consoleErrorSpy: jest.SpyInstance;
+let consoleWarnSpy: jest.SpyInstance;
+
 beforeEach(() => {
-  jest.spyOn(console, "error").mockImplementation(() => {});
-  jest.spyOn(console, "warn").mockImplementation(() => {});
+  consoleErrorSpy = jest
+    .spyOn(console, "error")
+    .mockImplementation(() => {});
+
+  consoleWarnSpy = jest
+    .spyOn(console, "warn")
+    .mockImplementation(() => {});
 });
 
 afterEach(() => {
+  consoleErrorSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
   jest.restoreAllMocks();
 });
