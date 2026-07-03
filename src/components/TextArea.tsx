@@ -56,7 +56,7 @@ export function TextArea({ blocks, setBlocks }: TextAreaProps) {
   };
 
   return (
-    <div className="flex-1 p-8 space-y-4">
+    <div className="flex-1 p-8 space-y-4 overflow-auto">
       {blocks.map((block, index) => (
         <textarea
           key={block.id}
@@ -64,13 +64,11 @@ export function TextArea({ blocks, setBlocks }: TextAreaProps) {
           value={block.content}
           onChange={(e) => updateBlock(block.id, e.target.value)}
           onKeyDown={(e) => {
-            // ENTER → new block
             if (e.key === "Enter") {
               e.preventDefault();
               createBlockAfter(index);
             }
 
-            // BACKSPACE on empty → merge
             if (e.key === "Backspace" && block.content === "") {
               e.preventDefault();
               mergeWithPrevious(index);
