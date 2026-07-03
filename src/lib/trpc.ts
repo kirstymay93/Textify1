@@ -1,11 +1,3 @@
-type AnyFn = (...args: any[]) => any;
-
-/**
- * TEMPORARY FRONTEND MOCK — NOT FOR PRODUCTION USE
- *
- * Replace with real tRPC client when backend is ready.
- */
-
 export type AppRouter = unknown;
 
 const createQuery = <TData>(data: TData) => ({
@@ -14,7 +6,7 @@ const createQuery = <TData>(data: TData) => ({
   refetch: async () => {},
 });
 
-const createMutation = <TArgs = any, TResult = any>(
+const createMutation = <TArgs = unknown, TResult = unknown>(
   result: TResult
 ) => ({
   mutateAsync: async (_args?: TArgs): Promise<TResult> => result,
@@ -23,18 +15,16 @@ const createMutation = <TArgs = any, TResult = any>(
 export const trpc = {
   editor: {
     getProject: {
-      useQuery: (_args?: any, _opts?: any) =>
-        createQuery(null as unknown),
+      useQuery: () => createQuery<null>(null),
     },
 
     getTextRegions: {
-      useQuery: (_args?: any, _opts?: any) =>
-        createQuery([] as any[]),
+      useQuery: () => createQuery<any[]>([]),
     },
 
     analyzeImage: {
       useMutation: () =>
-        createMutation<any, { regions: any[] }>({
+        createMutation<any, { regions: unknown[] }>({
           regions: [],
         }),
     },
