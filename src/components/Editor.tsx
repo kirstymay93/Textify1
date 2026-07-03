@@ -9,10 +9,9 @@ export function EditorContent() {
 
   const [blocks, setBlocks] = useState(project.blocks);
 
-  // Loading state (keep what you already had)
   if (authLoading || projectLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center">
         <div className="text-sm text-muted-foreground">Loading editor...</div>
       </div>
     );
@@ -25,17 +24,16 @@ export function EditorContent() {
 
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* TEXT EDITOR (replaces CanvasArea) */}
+        {/* TEXT EDITOR (core system) */}
         <TextArea blocks={blocks} setBlocks={setBlocks} />
 
-        {/* Sidebar */}
+        {/* Sidebar (UI only for now) */}
         <EditorSidebar />
       </div>
     </div>
   );
 }
 
-// default export (important for routing)
 export default function Editor() {
   return <EditorContent />;
 }
