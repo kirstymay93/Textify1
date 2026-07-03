@@ -1,19 +1,18 @@
-import { useEffect } from 'react';
-import { useLocation } from 'wouter';
-import Editor from '@/components/Editor';
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+import Editor from "@/components/Editor";
 
 export default function App() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    if (location === '/') {
-      setLocation('/1');
+    if (location === "/") {
+      setLocation("/1");
     }
   }, [location, setLocation]);
 
-  if (location === '/') {
-    return null;
-  }
+  // prevent rendering editor during redirect
+  if (location === "/") return null;
 
   return <Editor />;
 }
