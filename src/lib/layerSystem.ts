@@ -14,7 +14,7 @@ export interface Region {
   backgroundColor?: string;
   letterSpacing?: number;
   lineHeight?: number;
-  textAlign?: 'left' | 'center' | 'right';
+  textAlign?: "left" | "center" | "right";
 }
 
 export interface TextStyling {
@@ -26,18 +26,18 @@ export interface TextStyling {
   backgroundColor: string;
   letterSpacing: number;
   lineHeight: number;
-  textAlign: 'left' | 'center' | 'right';
+  textAlign: "left" | "center" | "right";
 }
 
 export interface Position {
-  x: number; // percentage
-  y: number; // percentage
-  width: number; // percentage
-  height: number; // percentage
-  px: number; // pixels
-  py: number; // pixels
-  pw: number; // pixels
-  ph: number; // pixels
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  px: number;
+  py: number;
+  pw: number;
+  ph: number;
 }
 
 export interface Layer {
@@ -51,7 +51,7 @@ export interface Layer {
 }
 
 export function getLayerDisplayText(layer: Layer): string {
-  return layer.editedText ?? layer.originalText;
+  return layer.editedText;
 }
 
 export function isLayerModified(layer: Layer): boolean {
@@ -63,14 +63,19 @@ export function calculatePosition(
   containerWidth: number,
   containerHeight: number
 ): Position {
+  const px = (region.x / 100) * containerWidth;
+  const py = (region.y / 100) * containerHeight;
+  const pw = (region.width / 100) * containerWidth;
+  const ph = (region.height / 100) * containerHeight;
+
   return {
     x: region.x,
     y: region.y,
     width: region.width,
     height: region.height,
-    px: (region.x / 100) * containerWidth,
-    py: (region.y / 100) * containerHeight,
-    pw: (region.width / 100) * containerWidth,
-    ph: (region.height / 100) * containerHeight,
+    px,
+    py,
+    pw,
+    ph,
   };
 }
