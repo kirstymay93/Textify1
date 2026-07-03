@@ -1,9 +1,5 @@
 import { useRef } from "react";
-
-export interface Block {
-  id: string;
-  content: string;
-}
+import type { Block } from "@/types/block";
 
 interface TextAreaProps {
   blocks: Block[];
