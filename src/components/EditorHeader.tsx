@@ -1,18 +1,34 @@
+import { Button } from "@/components/ui/button";
+
+type Project = {
+  id?: string;
+  title?: string;
+};
+
 interface EditorHeaderProps {
-  project: any;
+  project: Project;
 }
 
 export function EditorHeader({ project }: EditorHeaderProps) {
   return (
-    <header className="flex items-center justify-between px-5 py-3 border-b border-border/50 bg-card/60 backdrop-blur-sm shrink-0 z-20">
-      <div className="flex items-center gap-3">
-        <div className="text-sm font-medium text-foreground">
-          {project?.title || 'Untitled Project'}
-        </div>
-      </div>
+    <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-background">
       <div className="flex items-center gap-2">
-        <p className="text-xs text-muted-foreground">Ready</p>
+        <h1 className="text-sm font-medium">
+          {project?.title ?? "Untitled Document"}
+        </h1>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="sm">
+          Share
+        </Button>
+
+        <Button size="sm">
+          Export
+        </Button>
       </div>
     </header>
   );
 }
+
+export default EditorHeader;
