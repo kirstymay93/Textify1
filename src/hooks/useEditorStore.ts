@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export function useEditorInitializer() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,7 +9,6 @@ export function useEditorInitializer() {
     blocks: [
       {
         id: "b1",
-        type: "text",
         content: "Start writing here...",
       },
     ],
