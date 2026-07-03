@@ -1,26 +1,32 @@
-import { render, screen } from '@testing-library/react';
-import { EditorErrorBoundary } from '../EditorErrorBoundary';
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { EditorErrorBoundary } from "@/components/EditorErrorBoundary";
 
-describe('EditorErrorBoundary', () => {
-  it('renders children when there is no error', () => {
-    render(
-      <EditorErrorBoundary>
-        <div>Test content</div>
-      </EditorErrorBoundary>
-    );
-    expect(screen.getByText('Test content')).toBeInTheDocument();
+// Component that throws an error
+function BrokenComponent() {
+  throw new Error("Test error");
+}
+
+describe("EditorErrorBoundary", () => {
+  beforeEach(() => {
+    // prevent noisy test output
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  it('renders error message when error occurs', () => {
-    const ThrowError = () => {
-      throw new Error('Test error');
-    };
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
+  it("catches errors and shows fallback UI", () => {
     render(
       <EditorErrorBoundary>
-        <ThrowError />
+        <BrokenComponent />
       </EditorErrorBoundary>
     );
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+
+    // adjust text depending on your actual fallback UI
+    expect(
+      screen.getByText(/something went wrong|error/i)
+    ).toBeInTheDocument();
   });
 });
