@@ -1,3 +1,5 @@
+export type TextAlign = "left" | "center" | "right";
+
 export interface TextRegion {
   id: number;
   originalText: string;
@@ -6,6 +8,7 @@ export interface TextRegion {
   y: number;
   width: number;
   height: number;
+
   fontFamily?: string;
   fontSize?: number;
   fontWeight?: string;
@@ -14,6 +17,7 @@ export interface TextRegion {
   backgroundColor?: string;
   letterSpacing?: number;
   lineHeight?: number;
-  textAlign?: 'left' | 'center' | 'right';
+
+  textAlign?: TextAlign;
   confidence?: number;
 }
