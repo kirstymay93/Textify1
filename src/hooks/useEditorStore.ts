@@ -1,34 +1,23 @@
-import { useCallback, useRef } from 'react';
-import { useLocation } from 'wouter';
+import { useRef, useState } from "react";
 
 export function useEditorInitializer() {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [project] = useState({
+    id: "1",
+    title: "Untitled Document",
+    blocks: [
+      {
+        id: "b1",
+        content: "Start writing here...",
+      },
+    ],
+  });
+
   return {
     projectLoading: false,
     authLoading: false,
-    project: {
-      title: 'Untitled Project',
-      originalImageUrl: '',
-    },
+    project,
     containerRef,
-  };
-}
-
-export function useEditorStore() {
-  const [, navigate] = useLocation();
-
-  const goToProject = useCallback((projectId: number) => {
-    navigate(`/${projectId}`);
-  }, [navigate]);
-
-  const goHome = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
-
-  return {
-    navigate,
-    goToProject,
-    goHome,
   };
 }
