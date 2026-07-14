@@ -6,7 +6,7 @@ export default {
   roots: ['<rootDir>/src'],
 
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest'
+    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }]
   },
 
   moduleNameMapper: {
@@ -14,12 +14,6 @@ export default {
   },
 
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
-
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json'
-    }
-  },
 
   testPathIgnorePatterns: [
     '/node_modules/',
