@@ -1,9 +1,10 @@
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { EditorErrorBoundary } from "@/components/EditorErrorBoundary";
 
 // Component that throws an error
-function BrokenComponent() {
+function BrokenComponent(): React.ReactNode {
   throw new Error("Test error");
 }
 

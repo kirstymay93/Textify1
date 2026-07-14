@@ -238,7 +238,7 @@ export function updateLayerElement(
  */
 export class RenderBatcher {
   private pendingUpdates: Map<number, RenderableLayer> = new Map();
-  private batchTimer?: NodeJS.Timeout;
+  private batchTimer?: ReturnType<typeof setTimeout>;
   private batchTimeMs: number = 16; // ~60fps
   private onFlush: (layers: RenderableLayer[]) => void;
 
