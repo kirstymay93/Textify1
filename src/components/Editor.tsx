@@ -1,35 +1,34 @@
 import { useState } from "react";
-import { useEditorInitializer } from "@/hooks/useEditorStore";
+import { EditorErrorBoundary } from "@/components/EditorErrorBoundary";
 import { EditorHeader } from "@/components/EditorHeader";
 import { EditorSidebar } from "@/components/EditorSidebar";
 import { TextArea } from "@/components/TextArea";
+import { useEditorInitializer } from "@/hooks/useEditorStore";
 import type { Block } from "@/types/block";
 
 export default function Editor() {
   const { project, authLoading, projectLoading } = useEditorInitializer();
 
-  const [blocks, setBlocks] = useState<Block[]>(
-    project?.blocks ?? []
-  );
+  const [blocks, setBlocks] = useState<Block[]>(() => project?.blocks ?? []);
 
   if (authLoading || projectLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">
-          Loading editor...
-        </p>
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-muted-foreground">Loading editor...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      <EditorHeader project={project} />
+    <div className="flex h-full min-h-0 flex-col bg-background">
+      <EditorErrorBoundary>
+        <EditorHeader project={project} />
 
-      <div className="flex flex-1 overflow-hidden">
-        <TextArea blocks={blocks} setBlocks={setBlocks} />
-        <EditorSidebar />
-      </div>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+          <TextArea blocks={blocks} setBlocks={setBlocks} />
+          <EditorSidebar />
+        </div>
+      </EditorErrorBoundary>
     </div>
   );
 }
