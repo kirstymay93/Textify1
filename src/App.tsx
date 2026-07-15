@@ -1,12 +1,14 @@
-import { useEffect, lazy, Suspense } from "react";
-import { useLocation, Link } from "wouter";
+import { Suspense, lazy, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import Editor from "@/components/Editor";
 import { cn } from "@/lib/utils";
 
-// Lazy-load the heavy DocumentEditor so the main editor bundle stays small
 const DocumentEditor = lazy(() => import("@/components/DocumentEditor"));
 
-type Tab = { label: string; path: string };
+type Tab = {
+  label: string;
+  path: string;
+};
 
 const TABS: Tab[] = [
   { label: "Text Editor", path: "/editor" },
@@ -15,22 +17,30 @@ const TABS: Tab[] = [
 
 function NavBar({ location }: { location: string }) {
   return (
-    <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-1 shrink-0">
-      <span className="text-sm font-semibold mr-4">Textify</span>
-      {TABS.map((tab) => (
-        <Link key={tab.path} href={tab.path}>
-          <a
+    <nav
+      aria-label="Primary"
+      className="flex h-10 shrink-0 items-center gap-1 border-b border-border bg-background px-4"
+    >
+      <span className="mr-4 text-sm font-semibold">Textify</span>
+      {TABS.map((tab) => {
+        const isActive = location.startsWith(tab.path);
+
+        return (
+          <Link
+            key={tab.path}
+            href={tab.path}
             className={cn(
-              "px-3 py-1 rounded-md text-sm transition-colors",
-              location.startsWith(tab.path)
+              "rounded-md px-3 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              isActive
                 ? "bg-black text-white"
                 : "text-muted-foreground hover:bg-muted"
             )}
+            aria-current={isActive ? "page" : undefined}
           >
             {tab.label}
-          </a>
-        </Link>
-      ))}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -38,34 +48,31 @@ function NavBar({ location }: { location: string }) {
 export default function App() {
   const [location, setLocation] = useLocation();
 
-  // Redirect root to the text editor
   useEffect(() => {
     if (location === "/" || location === "/1") {
       setLocation("/editor");
     }
   }, [location, setLocation]);
 
-  if (location === "/" || location === "/1") return null;
+  const content = location.startsWith("/documents") ? (
+    <Suspense
+      fallback={
+        <div className="flex h-full items-center justify-center">
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        </div>
+      }
+    >
+      <DocumentEditor />
+    </Suspense>
+  ) : (
+    <Editor />
+  );
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <NavBar location={location} />
 
-      <div className="flex-1 overflow-hidden">
-        {location.startsWith("/editor") && <Editor />}
-
-        {location.startsWith("/documents") && (
-          <Suspense
-            fallback={
-              <div className="h-full flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">Loading…</p>
-              </div>
-            }
-          >
-            <DocumentEditor />
-          </Suspense>
-        )}
-      </div>
+      <div className="min-h-0 flex-1 overflow-hidden">{content}</div>
     </div>
   );
 }
