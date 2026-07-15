@@ -6,7 +6,7 @@ import { TextArea } from "@/components/TextArea";
 import type { Block } from "@/types/block";
 
 export default function Editor() {
-  const { project, authLoading, projectLoading } = useEditorInitializer();
+  const { project, authLoading, projectLoading, isSaving } = useEditorInitializer();
 
   const [blocks, setBlocks] = useState<Block[]>(
     project?.blocks ?? []
@@ -24,7 +24,7 @@ export default function Editor() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      <EditorHeader project={project} />
+      <EditorHeader project={project} isSaving={isSaving} />
 
       <div className="flex flex-1 overflow-hidden">
         <TextArea blocks={blocks} setBlocks={setBlocks} />
