@@ -8,7 +8,7 @@ export interface ButtonProps
 }
 
 const buttonBase =
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50";
 
 const variants = {
   default: "bg-black text-white hover:bg-black/90",
@@ -23,16 +23,12 @@ const sizes = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "md", ...props }, ref) => {
+  ({ className, variant = "default", size = "md", type = "button", ...props }, ref) => {
     return (
       <button
         ref={ref}
-        className={cn(
-          buttonBase,
-          variants[variant],
-          sizes[size],
-          className
-        )}
+        type={type}
+        className={cn(buttonBase, variants[variant], sizes[size], className)}
         {...props}
       />
     );
