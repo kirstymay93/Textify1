@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "jest",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "echo \"No lint configured\""
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@trpc/client": "^10.45.2",
