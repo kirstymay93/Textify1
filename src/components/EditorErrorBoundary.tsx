@@ -25,8 +25,8 @@ export class EditorErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="h-full w-full flex items-center justify-center p-6">
-          <div className="text-center space-y-2">
+        <div className="flex h-full w-full items-center justify-center p-6">
+          <div className="space-y-2 text-center" role="alert" aria-live="assertive">
             <h2 className="text-lg font-semibold text-red-500">
               Something went wrong
             </h2>
@@ -35,7 +35,8 @@ export class EditorErrorBoundary extends React.Component<Props, State> {
             </p>
 
             <button
-              className="mt-3 px-4 py-2 rounded-md bg-black text-white"
+              type="button"
+              className="mt-3 rounded-md bg-black px-4 py-2 text-white"
               onClick={() => this.setState({ hasError: false })}
             >
               Reload editor
