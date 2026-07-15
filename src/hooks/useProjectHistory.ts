@@ -1,33 +1,35 @@
-import { useState, useCallback } from "react";
-import type { HistorySnapshot } from "@/components/ProjectOverview";
+import { useState } from "react";
+
+export interface Snapshot {
+  id: string;
+  name: string;
+  thumbnail?: string;
+  createdAt: Date;
+}
 
 export function useProjectHistory() {
-  const [history, setHistory] = useState<HistorySnapshot[]>([]);
+  const [history, setHistory] = useState<Snapshot[]>([]);
 
-  const addSnapshot = useCallback(
-    (name: string, thumbnail?: string) => {
-      const snapshot: HistorySnapshot = {
-        id: `snapshot-${Date.now()}`,
-        timestamp: Date.now(),
-        name,
-        thumbnail,
-      };
+  const addSnapshot = (name: string, thumbnail?: string) => {
+    const snapshot: Snapshot = {
+      id: `snapshot-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name,
+      thumbnail,
+      createdAt: new Date(),
+    };
 
-      setHistory((prev) => [snapshot, ...prev].slice(0, 50)); // Keep last 50 snapshots
-    },
-    []
-  );
+    setHistory((prev) => [snapshot, ...prev]);
 
-  const getSnapshot = useCallback(
-    (snapshotId: string) => {
-      return history.find((s) => s.id === snapshotId);
-    },
-    [history]
-  );
+    return snapshot.id;
+  };
 
-  const clearHistory = useCallback(() => {
+  const getSnapshot = (id: string) => {
+    return history.find((snapshot) => snapshot.id === id);
+  };
+
+  const clearHistory = () => {
     setHistory([]);
-  }, []);
+  };
 
   return {
     history,
