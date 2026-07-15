@@ -1,8 +1,20 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-// The URL where the ranuts/document dev server is running.
-// In production, replace this with your deployed document editor URL.
-export const DOCUMENT_EDITOR_URL = "http://localhost:5173";
+const FALLBACK_DOCUMENT_EDITOR_URL = "http://localhost:5173";
+
+function resolveDocumentEditorUrl(): string {
+  const configuredUrl = import.meta.env.VITE_DOCUMENT_EDITOR_URL?.trim();
+  const candidate = configuredUrl || FALLBACK_DOCUMENT_EDITOR_URL;
+
+  try {
+    return new URL(candidate, window.location.origin).toString();
+  } catch {
+    return FALLBACK_DOCUMENT_EDITOR_URL;
+  }
+}
+
+export const DOCUMENT_EDITOR_URL = resolveDocumentEditorUrl();
+export const DOCUMENT_EDITOR_ORIGIN = new URL(DOCUMENT_EDITOR_URL).origin;
 
 export type DocEditorStatus =
   | "idle"
@@ -34,6 +46,15 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+function isSafeHttpUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function useDocumentEditor(): UseDocumentEditorReturn {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<DocEditorState>({
@@ -48,17 +69,20 @@ export function useDocumentEditor(): UseDocumentEditorReturn {
     (type: string, payload: Record<string, unknown> = {}) => {
       const iframe = iframeRef.current;
       if (!iframe?.contentWindow) return;
+
       const id = generateId();
-      iframe.contentWindow.postMessage({ id, type, payload }, DOCUMENT_EDITOR_URL);
+      iframe.contentWindow.postMessage(
+        { id, type, payload },
+        DOCUMENT_EDITOR_ORIGIN
+      );
     },
     []
   );
 
-  // Listen for messages coming back from the iframe
   useEffect(() => {
     const handler = (event: MessageEvent) => {
-      // Accept messages from the document editor origin
-      if (event.origin !== DOCUMENT_EDITOR_URL) return;
+      if (event.origin !== DOCUMENT_EDITOR_ORIGIN) return;
+
       const { type, payload } = event.data || {};
       if (!type?.startsWith("document:")) return;
 
@@ -82,13 +106,13 @@ export function useDocumentEditor(): UseDocumentEditorReturn {
             status: "opened",
             lastSavedFile: payload?.file ?? null,
           }));
-          // Auto-download the saved file
+
           if (payload?.file instanceof File) {
             const url = URL.createObjectURL(payload.file);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = payload.file.name;
-            a.click();
+            const anchor = document.createElement("a");
+            anchor.href = url;
+            anchor.download = payload.file.name;
+            anchor.click();
             URL.revokeObjectURL(url);
           }
           break;
@@ -127,6 +151,15 @@ export function useDocumentEditor(): UseDocumentEditorReturn {
 
   const openFromUrl = useCallback(
     (url: string, fileName: string, readonly = false) => {
+      if (!isSafeHttpUrl(url)) {
+        setState((prev) => ({
+          ...prev,
+          status: "error",
+          errorMessage: "Please enter a valid http or https URL.",
+        }));
+        return;
+      }
+
       setState((prev) => ({ ...prev, status: "loading", errorMessage: null }));
       sendCommand("document:open-url", { url, fileName, readonly });
     },
@@ -160,5 +193,13 @@ export function useDocumentEditor(): UseDocumentEditorReturn {
     sendCommand("document:get-state");
   }, [sendCommand]);
 
-  return { iframeRef, state, openFromUrl, openFromFile, save, setReadonly, getState };
+  return {
+    iframeRef,
+    state,
+    openFromUrl,
+    openFromFile,
+    save,
+    setReadonly,
+    getState,
+  };
 }
