@@ -1,0 +1,39 @@
+name: Fix Snapshot Timestamp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix Snapshot type
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("src/hooks/useProjectHistory.ts")
+          s = p.read_text()
+
+          s = s.replace(
+              "createdAt: Date;",
+              "createdAt: Date;\n  timestamp: number;"
+          )
+
+          s = s.replace(
+              "createdAt: new Date(),",
+              "createdAt: new Date(),\n      timestamp: Date.now(),"
+          )
+
+          p.write_text(s)
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/hooks/useProjectHistory.ts
+          git commit -m "Fix snapshot timestamp" || exit 0
+          git push
