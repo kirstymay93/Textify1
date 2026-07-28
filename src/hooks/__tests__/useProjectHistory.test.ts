@@ -94,8 +94,8 @@ describe("useProjectHistory", () => {
     const id2 = result.current.history[0].id;
 
     expect(id1).not.toBe(id2);
-    expect(id1).toMatch(/^snapshot-\d+$/);
-    expect(id2).toMatch(/^snapshot-\d+$/);
+    expect(id1).toMatch(/^snapshot-\d+-\d+$/);
+    expect(id2).toMatch(/^snapshot-\d+-\d+$/);
   });
 
   it("records timestamp for each snapshot", () => {
