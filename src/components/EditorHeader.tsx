@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { Link } from "wouter";
-import { Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { SaveIcon } from "@/components/icons";
 
 interface EditorHeaderProps {
   project: { id: string; title: string };
@@ -14,28 +14,33 @@ export const EditorHeader = memo(function EditorHeader({
   isSaving,
 }: EditorHeaderProps) {
   return (
-    <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-background">
-      <div className="flex items-center gap-2">
+    <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4">
+      <div className="flex min-w-0 items-center gap-2">
         <Link href="/editor">
-          <a className="text-base font-bold text-foreground mr-4">Textify</a>
+          <a className="mr-4 text-base font-bold text-foreground">Textify</a>
         </Link>
-        <h1 className="text-lg font-semibold text-foreground flex-1 truncate">
+        <h1 className="min-w-0 flex-1 truncate text-lg font-semibold text-foreground">
           {project?.title || "Untitled Project"}
         </h1>
       </div>
 
-      {isSaving && (
-        <div className="flex items-center gap-1 text-sm text-muted-foreground animate-pulse">
-          <Save className="w-4 h-4" />
-          <span>Saving...</span>
-        </div>
-      )}
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm">
+        <div
+          className={cn(
+            "flex items-center gap-1 text-sm text-muted-foreground transition-opacity",
+            isSaving ? "opacity-100" : "opacity-0"
+          )}
+          aria-live="polite"
+        >
+          <SaveIcon className="h-4 w-4" />
+          <span>{isSaving ? "Saving..." : "Saved"}</span>
+        </div>
+
+        <Button variant="outline" size="sm" type="button">
           Share
         </Button>
 
-        <Button size="sm">
+        <Button size="sm" type="button">
           Export
         </Button>
       </div>
