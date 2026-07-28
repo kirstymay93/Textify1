@@ -4,7 +4,13 @@ export interface Snapshot {
   id: string;
   name: string;
   thumbnail?: string;
-  createdAt: Date;
+  timestamp: number;
+}
+
+const HISTORY_LIMIT = 50;
+
+function createSnapshotId(): string {
+  return `snapshot-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
 }
 
 export function useProjectHistory() {
@@ -12,13 +18,13 @@ export function useProjectHistory() {
 
   const addSnapshot = (name: string, thumbnail?: string) => {
     const snapshot: Snapshot = {
-      id: `snapshot-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: createSnapshotId(),
       name,
       thumbnail,
-      createdAt: new Date(),
+      timestamp: Date.now(),
     };
 
-    setHistory((prev) => [snapshot, ...prev]);
+    setHistory((prev) => [snapshot, ...prev].slice(0, HISTORY_LIMIT));
 
     return snapshot.id;
   };
