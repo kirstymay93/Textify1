@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   AI_ACTION_DESCRIPTIONS,
   AI_ACTION_LABELS,
@@ -12,8 +12,6 @@ import {
   ContinueIcon,
   ExpandIcon,
   GrammarIcon,
-  PlusIcon,
-  RedoIcon,
   RewriteIcon,
   ShortenIcon,
   SparklesIcon,
@@ -31,7 +29,7 @@ interface AIActionToolbarProps {
 
 const BUTTON_ICON_SIZE = "h-4 w-4";
 
-const ACTION_ICONS: Record<AiAction, React.ReactNode> = {
+const ACTION_ICONS: Record<AiAction, ReactNode> = {
   improve: <SparklesIcon className={BUTTON_ICON_SIZE} />,
   rewrite: <RewriteIcon className={BUTTON_ICON_SIZE} />,
   grammar: <GrammarIcon className={BUTTON_ICON_SIZE} />,
